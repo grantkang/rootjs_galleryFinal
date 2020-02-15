@@ -53,6 +53,7 @@ function initiateApp(){
 		Documentation: http://api.jqueryui.com/sortable/
 		Example or sorting in action: https://jqueryui.com/sortable/
 	*/
+	$('#gallery').sortable();
 	makeGallery(pictures);
 	addModalCloseHandler();
 }
@@ -111,8 +112,23 @@ function initiateApp(){
  **/
 
 function makeGallery(imageArray){
+		for(let i = 0; i < imageArray.length; i++) {
+			let imagePath = imageArray[i];
+			let imageTitle = imagePath.replace('images/', '').replace('.jpg', '').replace('.jpeg','');
 
-	}
+			let figureEl = $('<figure>');
+			figureEl.addClass('imageGallery col-xs-12 col-sm-6 col-md-4');
+			figureEl.attr('imgPath', imagePath);
+			figureEl.css('background-image', 'url("' + imagePath + '")');
+			figureEl.click(displayImage);
+
+			let figcaptionEl = $('<figcaption>');
+			figcaptionEl.text(imageTitle);
+
+			figureEl.append(figcaptionEl);
+			$('#gallery').append(figureEl);
+		}
+}
 
 	/**
  * addModalCloseHandler
@@ -140,7 +156,9 @@ function makeGallery(imageArray){
  */
 
 function addModalCloseHandler(){
-
+	$('#modalImage').click(() => {
+		$('#galleryModal').modal('hide');
+	});
 }
 
 /**
@@ -181,6 +199,11 @@ function addModalCloseHandler(){
  *   - https://www.w3schools.com/bootstrap/bootstrap_ref_js_modal.asp (Check the Modal Methods section)
  */
 
-function displayImage(){
-
+function displayImage(event){
+	let currentElement = $(event.currentTarget);
+	let imagePath = currentElement.attr('imgPath');
+	let imageTitle = imagePath.replace('images/', '').replace('.jpg', '').replace('.jpeg', '');
+	$('.modal-title').text(imageTitle);
+	$('#modalImage').attr('src',imagePath);
+	$('#galleryModal').modal('show');
 }
